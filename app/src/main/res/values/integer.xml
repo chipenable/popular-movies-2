@@ -3,4 +3,5 @@
     <integer name="num_col">2</integer>
     <integer name="num_row">2</integer>
     <integer name="poster_div">2</integer>
+    <integer name="display_div">1</integer>
 </resources>

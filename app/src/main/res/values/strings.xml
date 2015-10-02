@@ -1,12 +1,19 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="popular">Most popular</string>
-    <string name="rated">Highest rated</string>
+    <string name="popular_item">Most popular</string>
+    <string name="rated_item">Highest rated</string>
+    <string name="favorite_item">Favorites</string>
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="min">min</string>
     <string name="genre">Genre:</string>
     <string name="connection_problem">Network is not available</string>
+    <string name="mark_as_favorite">mark as\r\n favorite</string>
+    <string name="favorite">favorite</string>
+    <string name="trailer_title">Trailers</string>
+    <string name="review_title">Reviews</string>
+
+
     <string name="no_key">You must add api_key to use the movie service. See MovieClient.java</string>
+
 </resources>

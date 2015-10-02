@@ -1,7 +1,10 @@
 package ru.chipenable.popularmovies.view;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.res.TypedArray;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
@@ -11,8 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 
-import retrofit.RestAdapter;
-import ru.chipenable.popularmovies.client.MovieClient;
+import ru.chipenable.popularmovies.R;
 import ru.chipenable.popularmovies.connection.ConnectionStateReceiver;
 
 /**
@@ -23,7 +25,6 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
     protected static final String TAG = "BaseFragment";
 
     protected FragmentCallback mCallback;
-    protected MovieClient mClient;
     protected ConnectionStateReceiver mReceiver;
 
     /*interface to communicate with Activity*/
@@ -39,23 +40,15 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
     public abstract void updateData(boolean connectionState);
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         Log.d(TAG, "onAttach");
 
         /*attach callback function*/
         try {
-            mCallback = (FragmentCallback) activity;
+            mCallback = (FragmentCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement FragmentCallback");
-        }
-
-        /*Retrofit web client*/
-        if (mClient == null){
-            mClient = new RestAdapter.Builder()
-                    .setEndpoint(MovieClient.ENDPOINT)
-                    .build()
-                    .create(MovieClient.class);
+            throw new ClassCastException(context.toString() + " must implement FragmentCallback");
         }
     }
 
@@ -81,7 +74,7 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
     public void onStop() {
         super.onStop();
 
-        /*uregister receiver*/
+        /*unregister receiver*/
         if (mReceiver != null) {
             getActivity().unregisterReceiver(mReceiver);
             mReceiver = null;
@@ -108,15 +101,24 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
             display.getSize(screenSize);
         }
 
+        int displayDiv = getResources().getInteger(R.integer.display_div);
+        screenSize.x /= displayDiv;
+
         /*get height of StatusBar*/
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = (resourceId > 0)? getResources().getDimensionPixelSize(resourceId) : 0;
+        Log.d(TAG, "height of status bar: " + Integer.toString(statusBarHeight));
 
-        //it doesn't work. I don't know how to get a height of ActionBar
-        int actionBarHeight = getActivity().getActionBar().getHeight();
+        //get a height of ActionBar
+        TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int actionBarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+        Log.d(TAG, "height of action bar: " + Integer.toString(actionBarHeight));
 
-        /*calculate available screen size*/
+        //calculate available screen size
         screenSize.y -= (statusBarHeight + actionBarHeight);
+        Log.d(TAG, "display size: " + Integer.toString(screenSize.x) + "x" + Integer.toString(screenSize.y));
         return screenSize;
     }
 }

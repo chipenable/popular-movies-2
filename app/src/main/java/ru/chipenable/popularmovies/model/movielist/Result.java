@@ -14,6 +14,8 @@ public class Result {
     @Expose
     private long id;
 
+    private String posterLocalPath;
+
 
     /**
      *
@@ -52,6 +54,12 @@ public class Result {
         this.posterPath = posterPath;
     }
 
+    public String getPosterLocalPath(){
+        return posterLocalPath;
+    }
 
+    public void setPosterLocalPath(String posterLocalPath){
+        this.posterLocalPath = posterLocalPath;
+    }
 
 }

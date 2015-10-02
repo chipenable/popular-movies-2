@@ -1,11 +1,14 @@
 package ru.chipenable.popularmovies.view;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -15,26 +18,24 @@ import butterknife.ButterKnife;
 import ru.chipenable.popularmovies.R;
 import ru.chipenable.popularmovies.model.Command;
 
-public class DetailActivity extends Activity implements BaseFragment.FragmentCallback{
 
-    public static final String TAG = "DetailActivity";
+public class DetailActivity extends AppCompatActivity implements BaseFragment.FragmentCallback{
+
+    private static final String TAG = "DetailActivity";
     private static final String MOVIE_ID = "movie_id";
 
     @Bind(R.id.progress_bar) ProgressBar mProgressBar;
 
-    public static Intent makeIntent(Context context, long movieId){
+    /*********************************************************/
+
+    public static void start(Context context, long movieId){
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(MOVIE_ID, movieId);
-        return intent;
+        context.startActivity(intent);
     }
 
     private long getMovieId(){
-        long id = 0;
-        Intent intent = getIntent();
-        if (intent != null){
-            id = intent.getLongExtra(MOVIE_ID, 0);
-        }
-        return id;
+        return getIntent().getLongExtra(MOVIE_ID, 0);
     }
 
     /**********************************************************/
@@ -43,25 +44,24 @@ public class DetailActivity extends Activity implements BaseFragment.FragmentCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
 
-        if (savedInstanceState == null) {
-            DetailFragment fragment = DetailFragment.newInstance(getMovieId());
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.main_frame, fragment)
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.findFragmentByTag(DetailFragment.TAG) == null) {
+            Log.d(TAG, "create detail fragment");
+            fm.beginTransaction()
+                    .add(R.id.main_frame, DetailFragment.newInstance(getMovieId()), DetailFragment.TAG)
                     .commit();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -75,6 +75,7 @@ public class DetailActivity extends Activity implements BaseFragment.FragmentCal
             case Command.STOP_DOWNLOADING:
                 mProgressBar.setVisibility(View.GONE);
                 break;
+
             default:
         }
     }

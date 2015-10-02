@@ -1,9 +1,9 @@
 package ru.chipenable.popularmovies.view;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ru.chipenable.popularmovies.R;
-import ru.chipenable.popularmovies.client.MovieClient;
+import ru.chipenable.popularmovies.client.service.MovieClient;
 import ru.chipenable.popularmovies.model.Command;
 
 /*  At first you must add API_KEY !!!!
@@ -20,12 +20,11 @@ import ru.chipenable.popularmovies.model.Command;
  *  p.s.: Sorry for my English.
  *  */
 
-public class MainActivity extends Activity implements BaseFragment.FragmentCallback{
+public class MainActivity extends AppCompatActivity implements BaseFragment.FragmentCallback{
 
     public final static String PREF_TAG = "pref_tag";
 
-    /*When I adapt my project for tablets both MainFragment and
-    DetailFragment will use the same progress bar*/
+    private boolean mTwoPane;
     @Bind(R.id.progress_bar) ProgressBar mProgressBar;
 
     @Override
@@ -39,33 +38,46 @@ public class MainActivity extends Activity implements BaseFragment.FragmentCallb
             return;
         }
 
-        if (savedInstanceState == null) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.main_frame, new MainFragment())
+        if (findViewById(R.id.detail_frame) != null) {
+            mTwoPane = true;
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.findFragmentByTag(MainFragment.TAG) == null){
+            fm.beginTransaction()
+                    .add(R.id.main_frame, new MainFragment(), MainFragment.TAG)
                     .commit();
         }
     }
 
     /*Fragment's callback function. It is used to communicate with Activity:
     * - to control the progress bar
-    * - to start DetailActivity*/
+    * - to start DetailActivity/DetailFragment*/
     @Override
     public void fragmentCallback(int command, long arg) {
-
         switch(command){
             case Command.START_DOWNLOADING:
                 mProgressBar.setVisibility(View.VISIBLE);
                 break;
 
             case Command.STOP_DOWNLOADING:
-                mProgressBar.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.INVISIBLE);
                 break;
 
             case Command.SHOW_DETAIL:
-                Intent intent = DetailActivity.makeIntent(MainActivity.this, arg);
-                startActivity(intent);
+                if (!mTwoPane) {
+                    DetailActivity.start(MainActivity.this, arg);
+                }
+                else{
+                    getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.detail_frame, DetailFragment.newInstance(arg))
+                        .commit();
+                }
                 break;
+
+            default:
         }
     }
 

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class BelongsToCollection {
 
     @Expose
-    private Integer id;
+    private long id;
     @Expose
     private String name;
     @SerializedName("poster_path")
@@ -24,7 +24,7 @@ public class BelongsToCollection {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -33,7 +33,7 @@ public class BelongsToCollection {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

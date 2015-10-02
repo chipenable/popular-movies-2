@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 public class Genre {
 
     @Expose
-    private Integer id;
+    private long id;
     @Expose
     private String name;
 
@@ -17,7 +17,7 @@ public class Genre {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -26,7 +26,7 @@ public class Genre {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

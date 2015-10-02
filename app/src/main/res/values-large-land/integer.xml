@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="num_col">3</integer>
+    <integer name="num_row">3</integer>
+    <integer name="poster_div">2</integer>
+    <integer name="display_div">2</integer>
+</resources>

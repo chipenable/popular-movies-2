@@ -4,7 +4,7 @@ package ru.chipenable.popularmovies.model.movielist;
  * Created by Pashgan on 07.07.2015.
  */
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
@@ -16,7 +16,7 @@ public class MovieList {
     private int page;
 
     @Expose
-    private List<Result> results = new ArrayList<Result>();
+    private List<Result> results;
 
     @SerializedName("total_pages")
     @Expose
@@ -25,6 +25,15 @@ public class MovieList {
     @SerializedName("total_results")
     @Expose
     private int totalResults;
+
+
+    public MovieList(){
+        page = 0;
+        totalPages = 0;
+        results = new ArrayList<>();
+    }
+
+
 
     /**
      * @return The page
@@ -80,6 +89,14 @@ public class MovieList {
      */
     public void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
+    }
+
+    public void addResult(Result result){
+        results.add(result);
+    }
+
+    public void addResults(List<Result> results){
+        results.addAll(results);
     }
 
     @Override

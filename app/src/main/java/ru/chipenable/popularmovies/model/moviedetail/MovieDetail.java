@@ -15,7 +15,7 @@ import ru.chipenable.popularmovies.R;
 public class MovieDetail {
 
     @Expose
-    private Boolean adult;
+    private boolean adult;
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
@@ -23,13 +23,13 @@ public class MovieDetail {
     @Expose
     private BelongsToCollection belongsToCollection;
     @Expose
-    private Integer budget;
+    private int budget;
     @Expose
     private List<Genre> genres = new ArrayList<Genre>();
     @Expose
     private String homepage;
     @Expose
-    private Integer id;
+    private long id;
     @SerializedName("imdb_id")
     @Expose
     private String imdbId;
@@ -42,7 +42,7 @@ public class MovieDetail {
     @Expose
     private String overview;
     @Expose
-    private Double popularity;
+    private double popularity;
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -56,9 +56,9 @@ public class MovieDetail {
     @Expose
     private String releaseDate;
     @Expose
-    private Long revenue;
+    private long revenue;
     @Expose
-    private Integer runtime;
+    private int runtime;
     @SerializedName("spoken_languages")
     @Expose
     private List<SpokenLanguage> spokenLanguages = new ArrayList<SpokenLanguage>();
@@ -69,20 +69,22 @@ public class MovieDetail {
     @Expose
     private String title;
     @Expose
-    private Boolean video;
+    private boolean video;
     @SerializedName("vote_average")
     @Expose
-    private Double voteAverage;
+    private double voteAverage;
     @SerializedName("vote_count")
     @Expose
-    private Integer voteCount;
+    private int voteCount;
+
+    private String posterLocalPath;
 
     /**
      *
      * @return
      * The adult
      */
-    public Boolean getAdult() {
+    public boolean getAdult() {
         return adult;
     }
 
@@ -91,7 +93,7 @@ public class MovieDetail {
      * @param adult
      * The adult
      */
-    public void setAdult(Boolean adult) {
+    public void setAdult(boolean adult) {
         this.adult = adult;
     }
 
@@ -136,7 +138,7 @@ public class MovieDetail {
      * @return
      * The budget
      */
-    public Integer getBudget() {
+    public int getBudget() {
         return budget;
     }
 
@@ -145,7 +147,7 @@ public class MovieDetail {
      * @param budget
      * The budget
      */
-    public void setBudget(Integer budget) {
+    public void setBudget(int budget) {
         this.budget = budget;
     }
 
@@ -190,7 +192,7 @@ public class MovieDetail {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -199,7 +201,7 @@ public class MovieDetail {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -280,7 +282,7 @@ public class MovieDetail {
      * @return
      * The popularity
      */
-    public Double getPopularity() {
+    public double getPopularity() {
         return popularity;
     }
 
@@ -289,7 +291,7 @@ public class MovieDetail {
      * @param popularity
      * The popularity
      */
-    public void setPopularity(Double popularity) {
+    public void setPopularity(double popularity) {
         this.popularity = popularity;
     }
 
@@ -370,7 +372,7 @@ public class MovieDetail {
      * @return
      * The revenue
      */
-    public Long getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 
@@ -379,7 +381,7 @@ public class MovieDetail {
      * @param revenue
      * The revenue
      */
-    public void setRevenue(Long revenue) {
+    public void setRevenue(long revenue) {
         this.revenue = revenue;
     }
 
@@ -388,7 +390,7 @@ public class MovieDetail {
      * @return
      * The runtime
      */
-    public Integer getRuntime() {
+    public int getRuntime() {
         return runtime;
     }
 
@@ -397,7 +399,7 @@ public class MovieDetail {
      * @param runtime
      * The runtime
      */
-    public void setRuntime(Integer runtime) {
+    public void setRuntime(int runtime) {
         this.runtime = runtime;
     }
 
@@ -478,7 +480,7 @@ public class MovieDetail {
      * @return
      * The video
      */
-    public Boolean getVideo() {
+    public boolean getVideo() {
         return video;
     }
 
@@ -487,7 +489,7 @@ public class MovieDetail {
      * @param video
      * The video
      */
-    public void setVideo(Boolean video) {
+    public void setVideo(boolean video) {
         this.video = video;
     }
 
@@ -514,7 +516,7 @@ public class MovieDetail {
      * @return
      * The voteCount
      */
-    public Integer getVoteCount() {
+    public int getVoteCount() {
         return voteCount;
     }
 
@@ -523,10 +525,18 @@ public class MovieDetail {
      * @param voteCount
      * The vote_count
      */
-    public void setVoteCount(Integer voteCount) {
+    public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
     }
 
+
+    public void setPosterLocalPath(String path){
+        posterLocalPath = path;
+    }
+
+    public String getPosterLocalPath(){
+        return posterLocalPath;
+    }
 
     public String genresToStr() {
         StringBuilder sb = new StringBuilder();

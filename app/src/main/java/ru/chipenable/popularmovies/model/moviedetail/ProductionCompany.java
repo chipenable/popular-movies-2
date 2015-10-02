@@ -10,7 +10,7 @@ public class ProductionCompany {
     @Expose
     private String name;
     @Expose
-    private Integer id;
+    private long id;
 
     /**
      *
@@ -35,7 +35,7 @@ public class ProductionCompany {
      * @return
      * The id
      */
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -44,7 +44,7 @@ public class ProductionCompany {
      * @param id
      * The id
      */
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

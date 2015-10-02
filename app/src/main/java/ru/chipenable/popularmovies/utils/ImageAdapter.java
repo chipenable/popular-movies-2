@@ -1,14 +1,9 @@
 package ru.chipenable.popularmovies.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
-import android.util.TypedValue;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -18,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ru.chipenable.popularmovies.R;
-import ru.chipenable.popularmovies.client.MovieClient;
+import ru.chipenable.popularmovies.client.service.MovieClient;
 import ru.chipenable.popularmovies.model.movielist.Result;
 
 /**
@@ -78,15 +73,23 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        /*get Url of a poster*/
-        Result movie = mMovieList.get(position);
-        String url = MovieClient.BASE_IMG_PATH + movie.getPosterPath();
 
-        /*Show poster by using Picasso library*/
-        Picasso.with(mContext)
-                .load(url)
-                .error(R.drawable.noposter)
-                .into(imageView);
+
+
+        Result movie = mMovieList.get(position);
+        String posterLocalPath = movie.getPosterLocalPath();
+        if (posterLocalPath == null) {
+
+            //Show poster by using Picasso library
+            String url = MovieClient.BASE_IMG_PATH + movie.getPosterPath();
+            Picasso.with(mContext)
+                    .load(url)
+                    .error(R.drawable.noposter)
+                    .into(imageView);
+        }
+        else{
+            imageView.setImageURI(Uri.parse(posterLocalPath));
+        }
 
         /*maybe it isn't the best solution to add data to GridView*/
         if ((position + 1) == getCount()){
