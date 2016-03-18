@@ -8,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -82,7 +83,7 @@ public class ImageAdapter extends BaseAdapter {
 
             //Show poster by using Picasso library
             String url = MovieClient.BASE_IMG_PATH + movie.getPosterPath();
-            Picasso.with(mContext)
+            Glide.with(mContext)
                     .load(url)
                     .error(R.drawable.noposter)
                     .into(imageView);

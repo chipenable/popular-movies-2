@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -38,6 +38,7 @@ import ru.chipenable.popularmovies.model.reviews.ReviewResult;
 import ru.chipenable.popularmovies.model.reviews.Reviews;
 import ru.chipenable.popularmovies.model.trailers.TrailerResult;
 import ru.chipenable.popularmovies.model.trailers.Trailers;
+import ru.chipenable.popularmovies.utils.Utils;
 
 /**
  * Created by Pashgan on 07.07.2015.
@@ -104,7 +105,7 @@ public class DetailFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, view);
 
-        Point screenSize = getScreenSize();
+        Point screenSize = Utils.getScreenSize(getActivity());
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mPoster.getLayoutParams();
         layoutParams.height = screenSize.y / getResources().getInteger(R.integer.poster_div);
         mPoster.setLayoutParams(layoutParams);
@@ -259,18 +260,15 @@ public class DetailFragment extends BaseFragment {
         String rating = Double.toString(movieDetail.getVoteAverage()) + "/10.0";
         mRating.setText(rating);
 
-        String posterLocalPath = movieDetail.getPosterLocalPath();
-        if (posterLocalPath == null) {
-            String posterUrl = MovieClient.BASE_IMG_PATH_300 + movieDetail.getPosterPath();
-            Picasso.with(getActivity())
-                    .load(posterUrl)
-                    .error(R.drawable.noposter)
-                    .into(mPoster);
+        String posterPath = movieDetail.getPosterLocalPath();
+        if (posterPath == null) {
+            posterPath = MovieClient.BASE_IMG_PATH_300 + movieDetail.getPosterPath();
         }
-        else{
-            Uri posterUri = Uri.parse(posterLocalPath);
-            mPoster.setImageURI(posterUri);
-        }
+
+        Glide.with(getActivity())
+                .load(posterPath)
+                .error(R.drawable.noposter)
+                .into(mPoster);
 
         if (mAllMovieDetails.getFavoriteFlag()) {
             mLikeButton.setText("favorite");

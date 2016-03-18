@@ -6,6 +6,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,11 +33,13 @@ import ru.chipenable.popularmovies.client.service.MovieClient;
 import ru.chipenable.popularmovies.R;
 import ru.chipenable.popularmovies.model.movielist.MovieList;
 import ru.chipenable.popularmovies.model.movielist.Result;
+import ru.chipenable.popularmovies.utils.RecyclerImageAdapter;
+import ru.chipenable.popularmovies.utils.Utils;
 
 /* This fragment shows GridView with movie posters
 *
 * */
-public class MainFragment extends BaseFragment implements ImageAdapter.EndListListener {
+public class MainFragment extends BaseFragment implements RecyclerImageAdapter.EndListListener, RecyclerImageAdapter.OnItemClickListener{
 
     public final static String TAG = "MainFragment";
     private final static String PREF_TYPE_SORT = "type_sort";
@@ -44,14 +48,14 @@ public class MainFragment extends BaseFragment implements ImageAdapter.EndListLi
     private final static int SORT_BY_RATING = 1;
     private final static int FAVORITES = 2;
 
-    @Bind(R.id.movie_grid_view) GridView mGridView;
+    @Bind(R.id.poster_recycler_view) RecyclerView mRecyclerView;
     private Handler mHandler;
-    private ImageAdapter mAdapter;
+    private RecyclerImageAdapter mAdapter;
     private boolean mFailureFlag;
     private MovieList mMovieList;
     private List<Result> mMovieResults;
 
-    //***************************** fragment methods ***************************************//
+    /***************************** fragment methods ***************************************/
 
     /*Receiver's callback function. It'll be called when a state of a network is changed*/
     @Override
@@ -79,14 +83,18 @@ public class MainFragment extends BaseFragment implements ImageAdapter.EndListLi
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
-        /*It calculates a size of the ImageView for the GridView*/
-        Point screenSize = getScreenSize();
+        /*It calculates a size of the ImageView for the RecyclerView*/
+        Point screenSize = Utils.getScreenSize(getActivity());
         int imageWidth = screenSize.x/getResources().getInteger(R.integer.num_col);
         int imageHeight = screenSize.y/getResources().getInteger(R.integer.num_row);
 
-        mAdapter = new ImageAdapter(getActivity(), mMovieResults, imageWidth, imageHeight);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
+                getResources().getInteger(R.integer.num_col)));
+        mAdapter = new RecyclerImageAdapter(getActivity(), mMovieResults, imageWidth, imageHeight);
         mAdapter.setEndListListener(this);
-        mGridView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+
 
         mHandler = new Handler(new Handler.Callback() {
             @Override
@@ -98,9 +106,10 @@ public class MainFragment extends BaseFragment implements ImageAdapter.EndListLi
                 if (com == MovieService.GET_MOVIE_LIST){
                     if (obj != null){
                         mMovieList = (MovieList)obj;
+                        int lastPosition = mMovieResults.size();
                         mMovieResults.addAll(mMovieList.getResults());
                         if (mAdapter != null){
-                            mAdapter.notifyDataSetChanged();
+                            mAdapter.notifyItemInserted(lastPosition);
                         }
                     }
                     else{
@@ -130,10 +139,9 @@ public class MainFragment extends BaseFragment implements ImageAdapter.EndListLi
     }
 
     /*it handles user clicks and start DetailActivity/DetailFragment*/
-    @OnItemClick(R.id.movie_grid_view)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Result result = (Result) parent.getAdapter().getItem(position);
-        mCallback.fragmentCallback(Command.SHOW_DETAIL, result.getId());
+    @Override
+    public void onItemClick(View view, int position, long id) {
+        mCallback.fragmentCallback(Command.SHOW_DETAIL, id);
     }
 
     @Override

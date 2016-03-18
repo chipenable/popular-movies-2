@@ -1,14 +1,19 @@
 package ru.chipenable.popularmovies.utils;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,12 +22,47 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
 
+import ru.chipenable.popularmovies.R;
+
 /**
  * Created by Pashgan on 02.10.2015.
  */
 public class Utils {
 
     private static final String TAG = "Utils";
+
+    /*This function is used to calculate image sizes*/
+    public static Point getScreenSize(Activity activity){
+
+        /*get full size of the display*/
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point screenSize = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(screenSize);
+        } else {
+            display.getSize(screenSize);
+        }
+
+        int displayDiv = activity.getResources().getInteger(R.integer.display_div);
+        screenSize.x /= displayDiv;
+
+        /*get height of StatusBar*/
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarHeight = (resourceId > 0)? activity.getResources().getDimensionPixelSize(resourceId) : 0;
+        Log.d(TAG, "height of status bar: " + Integer.toString(statusBarHeight));
+
+        //get a height of ActionBar
+        TypedArray styledAttributes = activity.getTheme().obtainStyledAttributes(
+                new int[]{android.R.attr.actionBarSize});
+        int actionBarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+        Log.d(TAG, "height of action bar: " + Integer.toString(actionBarHeight));
+
+        //calculate available screen size
+        screenSize.y -= (statusBarHeight + actionBarHeight);
+        Log.d(TAG, "display size: " + Integer.toString(screenSize.x) + "x" + Integer.toString(screenSize.y));
+        return screenSize;
+    }
 
     public static Uri downloadImage(Context context, String url, String name) {
         try {

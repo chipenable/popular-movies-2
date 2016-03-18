@@ -74,7 +74,6 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
     public void onStop() {
         super.onStop();
 
-        /*unregister receiver*/
         if (mReceiver != null) {
             getActivity().unregisterReceiver(mReceiver);
             mReceiver = null;
@@ -89,36 +88,5 @@ public abstract class BaseFragment  extends Fragment implements ConnectionStateR
         Log.d(TAG, "onDetach");
     }
 
-    /*This function is used to calculate image sizes*/
-    public Point getScreenSize(){
 
-        /*get full size of the display*/
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point screenSize = new Point();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            display.getRealSize(screenSize);
-        } else {
-            display.getSize(screenSize);
-        }
-
-        int displayDiv = getResources().getInteger(R.integer.display_div);
-        screenSize.x /= displayDiv;
-
-        /*get height of StatusBar*/
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarHeight = (resourceId > 0)? getResources().getDimensionPixelSize(resourceId) : 0;
-        Log.d(TAG, "height of status bar: " + Integer.toString(statusBarHeight));
-
-        //get a height of ActionBar
-        TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int actionBarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-        Log.d(TAG, "height of action bar: " + Integer.toString(actionBarHeight));
-
-        //calculate available screen size
-        screenSize.y -= (statusBarHeight + actionBarHeight);
-        Log.d(TAG, "display size: " + Integer.toString(screenSize.x) + "x" + Integer.toString(screenSize.y));
-        return screenSize;
-    }
 }
